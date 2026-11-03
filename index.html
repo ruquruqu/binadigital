@@ -110,9 +110,9 @@ svg{display:block}
 .hp{background:#F5F5F7}
 .hp-glow{position:absolute;left:0;top:0;width:375px;height:420px;object-fit:cover;pointer-events:none}
 .hp-body{padding:8px 16px 0;display:flex;flex-direction:column}
-.hp-header{display:flex;justify-content:space-between;align-items:center;height:42px}
+.hp-header{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;height:42px}
 .hp-logo{width:93px;height:20px;object-fit:cover;object-position:0 -7.5px;display:block}
-.hp-acc{display:flex;gap:4px;align-items:center;font-size:12px;line-height:18px;color:#6b7280;margin-top:4px;cursor:pointer}
+.hp-acc{position:relative;z-index:3;display:flex;gap:4px;align-items:center;font-size:12px;line-height:18px;color:#6b7280;margin-top:4px;cursor:pointer}
 .hp-circ{width:40px;height:40px;border-radius:999px;background:#fff;display:grid;place-items:center;filter:drop-shadow(0 4px 6px rgba(18,23,38,.05))}
 .hp-profile{display:flex;gap:12px;align-items:center;margin-top:20px;cursor:pointer}
 .hp-ava{width:44px;height:44px;border-radius:999px;border:1.375px solid #f3f4f6;overflow:hidden;position:relative;background:#fff;flex:none}
@@ -293,16 +293,17 @@ R.prelogin=()=>`<div class="screen pl" style="padding-bottom:0">
  <div class="pl-hello"><div><p class="a">Selamat datang kembali,</p><p class="b">${ME.name}</p></div><a onclick="go('login')">Ganti akun</a></div>
  <div class="pl-bar"><div class="pl-in">
   <div class="pl-qa">
-   ${[[['Transfer','<img src="'+A+'pl-transfer.svg" width="52" height="52" alt="">'],['Scan QRIS','<img src="'+A+'pl-qris.svg" width="52" height="52" alt="">'],['Kode Bayar','<span style="position:relative;width:52px;height:52px;display:block"><img src="'+A+'pl-ell.svg" width="52" height="52" style="position:absolute;inset:0" alt=""><img src="'+A+'logo-indomaret.png" style="position:absolute;left:6px;top:19px;width:40px;height:15px;object-fit:cover" alt=""></span>']],[['Top Up','<img src="'+A+'pl-topup.svg" width="44" height="44" style="margin-top:4px" alt="">'],['Setor Tunai','<img src="'+A+'pl-setor.svg" width="52" height="52" alt="">'],['Tarik Tunai','<img src="'+A+'pl-tarik.svg" width="52" height="52" alt="">']]].map(r=>`<div class="pl-row">${r.map(([l,ic])=>`<div onclick="sheet(loginNeeded('${l}'),1)">${ic}<span>${l}</span></div>`).join('')}</div>`).join('')}
+   ${[[['Transfer','<img src="'+A+'pl-transfer.svg" width="52" height="52" alt="">'],['Scan QRIS','<img src="'+A+'pl-qris.svg" width="52" height="52" alt="">'],['Kode Bayar','<span style="position:relative;width:52px;height:52px;display:block"><img src="'+A+'pl-ell.svg" width="52" height="52" style="position:absolute;inset:0" alt=""><img src="'+A+'logo-indomaret.png" style="position:absolute;left:6px;top:19px;width:40px;height:15px;object-fit:cover" alt=""></span>']],[['Top Up','<img src="'+A+'pl-topup.svg" width="44" height="44" style="margin-top:4px" alt="">'],['Setor Tunai','<img src="'+A+'pl-setor.svg" width="52" height="52" alt="">'],['Tarik Tunai','<img src="'+A+'pl-tarik.svg" width="52" height="52" alt="">']]].map(r=>`<div class="pl-row">${r.map(([l,ic])=>`<div onclick="S.after='${l}';sheet(loginNeeded('${l}'),1)">${ic}<span>${l}</span></div>`).join('')}</div>`).join('')}
   </div>
-  <div class="pl-bill" onclick="sheet(loginNeeded('Bayar tagihan'),1)"><div><b>Bayar tagihan lebih mudah</b><p>Nikmati transaksi kapan saja di mana saja.</p></div><img src="${A}ic-arrow-right20.svg" width="20" height="20" alt=""></div>
-  <div style="display:flex;gap:8px"><button class="pl-btn" style="flex:1" onclick="go('login')">Masuk</button><button class="pl-btn" style="width:42px;padding:10px 0" onclick="bioLogin()"><img src="${A}ic-finger.svg" width="20" height="20" alt=""></button></div>
+  <div class="pl-bill" onclick="S.after=null;sheet(loginNeeded('Bayar tagihan'),1)"><div><b>Bayar tagihan lebih mudah</b><p>Nikmati transaksi kapan saja di mana saja.</p></div><img src="${A}ic-arrow-right20.svg" width="20" height="20" alt=""></div>
+  <div style="display:flex;gap:8px"><button class="pl-btn" style="flex:1" onclick="S.after=null;go('login')">Masuk</button><button class="pl-btn" style="width:42px;padding:10px 0" onclick="bioLogin()"><img src="${A}ic-finger.svg" width="20" height="20" alt=""></button></div>
  </div>
  <div class="pl-promo"><img src="${A}promo-emas.png" alt=""><img src="${A}pl-dots.svg" width="52" height="6" alt=""></div>
  <div class="pl-hi"></div></div></div>`;
-const loginNeeded=l=>`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Masuk dulu, ya</div><div class="small muted" style="margin-bottom:18px">Untuk menggunakan ${l}, masuk ke akun Bina Digital kamu.</div><button class="btn" onclick="closeSheet();go('login')">Masuk</button></div>`;
+function afterLogin(){const a=S.after;S.after=null;reset('home');if(a==='Transfer')startTransfer();else if(a)toast(a+' belum tersedia di prototype')}
+const loginNeeded=l=>`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Masuk dulu, ya</div><div class="small muted" style="margin-bottom:18px">Untuk menggunakan ${l}, masuk ke akun Bina Digital kamu.</div><button class="btn" onclick="closeSheet();go('login')">Masuk</button><button class="btn grey" style="margin-top:8px" onclick="closeSheet();bioLogin()">Masuk dengan sidik jari</button></div>`;
 function bioLogin(){if(!S.bio){sheet(`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Login sidik jari belum aktif</div><div class="small muted" style="margin-bottom:18px">Masuk dengan password dulu, lalu aktifkan login sidik jari di Akun › Keamanan.</div><button class="btn" onclick="closeSheet();go('login')">Masuk dengan password</button></div>`,1);return}
- sheet(`<div style="text-align:center;padding:10px 0"><div style="width:64px;height:64px;border-radius:50%;background:#FFF1F1;color:var(--red);display:grid;place-items:center;margin:0 auto 12px;transform:scale(1.4)">${I.finger}</div><div class="name">Sentuh sensor sidik jari</div><div class="small muted" style="margin-top:6px">Memverifikasi…</div></div>`,1);setTimeout(()=>{reset('home')},900)}
+ sheet(`<div style="text-align:center;padding:10px 0"><div style="width:64px;height:64px;border-radius:50%;background:#FFF1F1;color:var(--red);display:grid;place-items:center;margin:0 auto 12px;transform:scale(1.4)">${I.finger}</div><div class="name">Sentuh sensor sidik jari</div><div class="small muted" style="margin-top:6px">Memverifikasi…</div></div>`,1);setTimeout(()=>{afterLogin()},900)}
 const promo=()=>`<div style="margin-top:20px;height:163px;border-radius:16px;background:linear-gradient(120deg,#B30E14,#E3141B 55%,#F45B2B);color:#fff;padding:18px;position:relative;overflow:hidden">
  <div style="font-size:11px;font-weight:700;opacity:.9">Investasi Emas, Cashback Emas</div>
  <div style="font-size:40px;font-weight:800;margin-top:14px;color:#FFD34D">Rp150<span style="font-size:22px">rb</span></div>
@@ -315,7 +316,7 @@ R.login=()=>`<div class="screen">${head('Masuk')}<div class="wrap" style="margin
  <div class="field"><label>Password</label><input type="password" placeholder="Masukkan password" id="lp"></div>
  <div class="small" style="color:var(--red);font-weight:600;margin-top:12px">Lupa password?</div>
  <div class="xs muted" style="margin-top:16px">Prototype: isi apa saja untuk masuk.</div></div>
- <div class="footer"><button class="btn" onclick="reset('home')">Masuk</button></div></div>`;
+ <div class="footer"><button class="btn" onclick="afterLogin()">Masuk</button></div></div>`;
 
 /* ---------- HOME ---------- */
 const F={ink:'#111827',sec:'#1f2937',cap:'#6b7280',red:'#c9161e',brand:'#ed1c24'};
