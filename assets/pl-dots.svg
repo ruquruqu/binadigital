@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="52" height="6" viewBox="0 0 52 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Indicators">
+<rect id="active" width="16" height="6" rx="3" fill="#ED1C24"/>
+<circle id="inactive-1" cx="25" cy="3" r="3" fill="#E5E7EB"/>
+<circle id="inactive-2" cx="37" cy="3" r="3" fill="#E5E7EB"/>
+<circle id="inactive-3" cx="49" cy="3" r="3" fill="#E5E7EB"/>
+</g>
+</svg>
