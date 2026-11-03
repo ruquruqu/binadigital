@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bina Digital — Prototype (Miawmiaw)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#E3141B;--red2:#C80F16;--plum:#4A1A5C;--ink:#1D1D22;--ink2:#5B5B66;--ink3:#9A9AA5;--line:#ECECF0;--bg:#F5F6F8;--card:#fff;--green:#14A44D;--amber:#F2A100;--r:16px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#2a2a33;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink)}
+body{display:flex;align-items:center;justify-content:center;gap:28px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit}
+.phone{width:375px;height:812px;background:var(--bg);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 0 10px #111,0 0 0 11px #333}
+@media (max-width:500px){body{display:block;background:var(--bg)}.phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}.demo{display:none!important}}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-bottom:110px;animation:in .22s ease}
+.screen::-webkit-scrollbar{display:none}
+@keyframes in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.status{height:32px;display:flex;justify-content:space-between;align-items:center;padding:0 22px;font-size:13px;font-weight:600;position:relative;z-index:3}
+.status.light{color:#fff}
+.grad{background:linear-gradient(120deg,#F0262D 0%,#D3121A 45%,#7A1B52 85%,#4A1A5C 100%);color:#fff}
+.appbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 18px;position:relative;z-index:2}
+.appbar h1{font-size:17px;font-weight:700}
+.icbtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18)}
+.icbtn.dark{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.top{border-radius:0 0 0 0}
+.wrap{padding:0 16px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:0 1px 2px rgba(20,20,40,.04);border:1px solid var(--line)}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px;font-weight:700;font-size:15px}
+.sec-h a{font-size:12px;color:var(--red);font-weight:600;cursor:pointer}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:999px;background:var(--red);color:#fff;font-weight:700;font-size:15px}
+.btn:disabled{background:#F7A6A9;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+.btn.grey{background:#F1F1F4;color:var(--ink)}
+.footer{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 26px;background:linear-gradient(transparent,var(--bg) 30%);z-index:5}
+.muted{color:var(--ink2)}.small{font-size:12px}.xs{font-size:11px}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff;flex:none}
+.row{display:flex;align-items:center;gap:12px}
+.list .item{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer}
+.list .item+.item{border-top:1px solid var(--line)}
+.grow{flex:1;min-width:0}
+.name{font-weight:600;font-size:14px}
+.sub{font-size:11px;color:var(--ink3);margin-top:3px;display:flex;gap:6px;align-items:center}
+.dot{width:3px;height:3px;border-radius:50%;background:var(--ink3)}
+.chip{padding:8px 14px;border-radius:999px;background:#F1F1F4;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--red);color:#fff}
+.seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg button{flex:1;height:38px;border-radius:999px;font-weight:600;font-size:14px}
+.seg button.on{background:var(--red);color:#fff}
+.search{display:flex;align-items:center;gap:8px;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 13px;background:#fff}
+.search input{border:0;outline:0;flex:1;font-size:14px;background:none}
+.field{border:1px solid var(--line);border-radius:12px;padding:10px 13px;background:#fff;cursor:pointer}
+.field label{display:block;font-size:11px;color:var(--ink3);margin-bottom:3px}
+.field input{border:0;outline:0;width:100%;font-size:15px;font-weight:600;background:none}
+.nav{position:absolute;left:16px;right:16px;bottom:22px;height:66px;background:#fff;border-radius:999px;box-shadow:0 8px 30px rgba(20,20,40,.12);display:flex;align-items:center;justify-content:space-around;padding:0 10px;z-index:6}
+.nav button{height:42px;min-width:42px;border-radius:999px;display:flex;align-items:center;gap:6px;justify-content:center;color:#A3A3AD;font-weight:700;font-size:13px}
+.nav button.on{background:var(--red);color:#fff;padding:0 16px}
+.sheet-bg{position:absolute;inset:0;background:rgba(15,15,25,.5);z-index:20;display:flex;align-items:flex-end;animation:fade .2s}
+.sheet-bg.center{align-items:center;justify-content:center;padding:24px}
+@keyframes fade{from{opacity:0}}
+.sheet{background:#fff;width:100%;border-radius:24px 24px 0 0;padding:10px 16px 28px;max-height:86%;overflow:auto;animation:up .25s ease}
+.sheet-bg.center .sheet{border-radius:24px;animation:pop .2s}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+.grab{width:40px;height:4px;border-radius:9px;background:#DADAE0;margin:0 auto 14px}
+.sheet h3{text-align:center;font-size:16px;margin-bottom:14px}
+.opt{border:1.5px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px;cursor:pointer}
+.opt.on{border-color:var(--red);background:#FFF6F6}
+.kv{display:flex;justify-content:space-between;font-size:12px;margin-top:6px}.kv span:first-child{color:var(--ink3)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;background:#FFE8E9;color:var(--red)}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 6px;padding:16px 8px}
+.qa div{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;position:relative}
+.qa i{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-style:normal}
+.hl{position:absolute;top:-6px;right:6px;background:var(--amber);color:#fff;font-size:8px;padding:2px 5px;border-radius:6px}
+.toast{position:absolute;left:16px;right:16px;top:44px;background:#1D1D22;color:#fff;border-radius:12px;padding:12px 14px;font-size:13px;z-index:40;animation:pop .2s}
+.pinpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 24px}
+.pinpad button{height:60px;font-size:24px;font-weight:600;border-radius:14px}
+.pinpad button:active{background:#EEE}
+.dots{display:flex;gap:14px;justify-content:center;margin:26px 0}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid #CFCFD6}
+.dots i.f{background:var(--red);border-color:var(--red)}
+.bubble{background:#fff;border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:12px;font-size:13px;line-height:1.45;max-width:260px}
+.bubble.me{background:var(--red);color:#fff;border:0;border-radius:16px 4px 16px 16px;margin-left:auto}
+.sug{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;margin-top:8px;width:260px;cursor:pointer}
+.composer{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 16px 24px;display:flex;gap:10px;align-items:center;z-index:5}
+.composer input{flex:1;height:44px;border:1px solid var(--line);border-radius:999px;padding:0 16px;outline:0}
+.mention{position:absolute;left:74px;bottom:80px;width:227px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:6px;z-index:6}
+.mention .item{padding:8px;border-radius:10px}.mention .item:hover{background:#F6F6F8}
+.skel{background:linear-gradient(90deg,#EEE 25%,#F6F6F6 50%,#EEE 75%);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:12px}
+@keyframes sh{to{background-position:-200% 0}}
+.demo{width:260px;color:#ddd;font-size:12px;align-self:center}
+.demo h4{color:#fff;font-size:14px;margin-bottom:4px}
+.demo p{color:#999;margin-bottom:14px;line-height:1.5}
+.demo .g{margin-bottom:14px}
+.demo .g b{display:block;color:#bbb;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.demo button{display:block;width:100%;text-align:left;background:#3a3a45;color:#eee;border-radius:8px;padding:8px 10px;margin-bottom:5px;font-size:12px}
+.demo button:hover{background:#4a4a58}
+.demo button.on{background:var(--red)}
+.tog{width:44px;height:26px;border-radius:99px;background:#D6D6DC;position:relative;flex:none;cursor:pointer;transition:.2s}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.tog.on{background:var(--red)}.tog.on::after{left:21px}
+.menu .mi{display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;font-size:14px}
+.menu .mi+.mi{border-top:1px solid var(--line)}
+.mi .ico{width:36px;height:36px;border-radius:10px;background:#FFF1F1;display:grid;place-items:center;color:var(--red)}
+.bar{height:6px;background:rgba(255,255,255,.3);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:#fff;border-radius:9px}
+.bar.r{background:#F1F1F4}.bar.r i{background:linear-gradient(90deg,#F7931E,var(--red))}
+svg{display:block}
+</style>
+</head>
+<body>
+<div class="phone" id="phone"></div>
+<aside class="demo" id="demo"></aside>
+
+<script>
+/* ============ DATA ============ */
+const ME={name:'Nabila Putri',user:'nabilaputri',email:'nabilaputri@mail.com',level:'Prime',xp:75000,next:100000,nextTier:'Elite',poin:1250};
+const ACCS=[{id:'tdu',name:'Tabungan Digital',no:'1234 5678 7890',bal:12450000},{id:'dd',name:'Dana Darurat',no:'8472 9104 7',bal:20000000}];
+const COL=['#E58C8A','#C99AD6','#8FB0E6','#86C9A0','#E8B86D','#9CC5C9','#D79FB8','#A7A2E0'];
+const SAVED=[
+ {n:'Budi Santoso',b:'BCA',no:'1234564821',fav:1},{n:'Rina Maharani',b:'Mandiri',no:'1390029217',fav:1},{n:'Dimas Pratama',b:'BCA',no:'0987653048',fav:1},
+ {n:'Ibnu Baskara',b:'Bank INA',no:'8800123456'},{n:'Siti Rahma',b:'BRI',no:'0145286732'},{n:'Andi Wijaya',b:'CIMB Niaga',no:'7890011159'},
+ {n:'Nadia Putri',b:'Bank Jago',no:'1029384402'},{n:'Fajar Ramadhan',b:'Bank Permata',no:'7012345890'},{n:'Kevin Hartono',b:'OCBC Indonesia',no:'2345678123'},
+ {n:'Andi Aditya',b:'BRI',no:'0145286733'},{n:'Andi Baskoro',b:'CIMB Niaga',no:'7890011160'},{n:'Anwar Hakim',b:'BRI',no:'0145286799'},{n:'Anis Zuhari',b:'Bank INA',no:'8800456789'}];
+const BANKS={populer:['BCA','BNI','BRI','BSI','Mandiri'],semua:['Aladin','Allo Bank','ANZ','Bank Jago','Bank Permata','CIMB Niaga','Jenius','OCBC Indonesia','Seabank']};
+const METHODS=[
+ {id:'bifast',n:'BI-FAST',fee:0,feeTxt:'Gratis · sisa 50/100x',nom:'Rp 10.000 - Rp 50.000.000',lim:'Rp 250.000.000',op:'24 Jam',min:10000,max:50000000},
+ {id:'rtgs',n:'Transfer RTGS',fee:25000,feeTxt:'Rp25.000',nom:'Rp 100.000.001 - Rp 250.000.000',lim:'Rp 250.000.000',op:'Hari ini (08:00-14:30)',min:100000001,max:250000000},
+ {id:'online',n:'Transfer Online',fee:6500,feeTxt:'Rp6.500',nom:'Rp 10.000 - Rp 50.000.000',lim:'Rp 100.000.000',op:'24 Jam',min:10000,max:50000000}];
+const PURPOSES=['Investasi','Pemindahan Dana','Pembelian','Lainnya'];
+
+/* ============ STATE ============ */
+const S={stack:['prelogin'],onboard:false,emptyRecent:false,result:'success',bio:true,tab:'saved',q:'',
+ tx:null, flags:{}};
+const newTx=()=>({to:null,amount:0,when:'Sekarang',src:ACCS[0],note:'',method:null,purpose:null});
+const rp=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
+const ini=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+const colr=n=>COL[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%COL.length];
+const isINA=b=>/INA/i.test(b);
+
+/* ============ ICONS ============ */
+const I={
+back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+chev:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+search:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9AA5" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+star:f=>`<svg width="20" height="20" viewBox="0 0 24 24" fill="${f?'#F2A100':'none'}" stroke="${f?'#F2A100':'#C4C4CC'}" stroke-width="1.8"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>`,
+home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>',
+wallet:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 13h2M3 10h18"/></svg>',
+scan:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"/></svg>',
+doc:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/></svg>',
+user:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>',
+bell:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16V11a6 6 0 1112 0v5l2 2H4z"/><path d="M10 21h4"/></svg>',
+cs:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/></svg>',
+eye:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+send:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l16-8-6 17-3-7z"/></svg>',
+plus:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+check:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 12l5 5 9-10"/></svg>',
+x:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+warn:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 7v6M12 17h.01"/></svg>',
+finger:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 11v4M8 12a4 4 0 018 0v2a8 8 0 01-1 4M6 9a7 7 0 0112-2M5 14v-2M9 20a10 10 0 001-5"/></svg>',
+info:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+more:'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+copy:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/></svg>',
+};
+const qaIcon=(c,g)=>`<i style="background:${c}1A;color:${c}">${g}</i>`;
+const G={tr:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>',
+tt:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 7L7 17M15 17H7V9"/></svg>',
+top:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+bill:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>',
+dep:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-6 9 6M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18"/></svg>',
+gold:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18l3-6h10l3 6zM8 12l2-5h4l2 5"/></svg>',
+sav:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M9 5V3h6v2M12 10v6M9 13h6"/></svg>',
+cic:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+kas:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>',
+grid:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>',
+qr:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2M20 14v6h-4"/></svg>'};
+
+/* ============ ROUTER ============ */
+const $=s=>document.querySelector(s);
+const go=r=>{S.stack.push(r);render()};
+const back=()=>{if(S.stack.length>1)S.stack.pop();render()};
+const reset=r=>{S.stack=[r];render()};
+const cur=()=>S.stack[S.stack.length-1];
+let overlay='';
+const sheet=(html,center)=>{overlay=`<div class="sheet-bg${center?' center':''}" onclick="if(event.target===this)closeSheet()"><div class="sheet">${center?'':'<div class="grab"></div>'}${html}</div></div>`;paint()};
+const closeSheet=()=>{overlay='';paint()};
+const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;$('#phone').appendChild(t);setTimeout(()=>t.remove(),2200)};
+function render(){overlay='';paint(true)}
+function paint(scrollTop){const r=cur();const html=(R[r.split(':')[0]]||R.home)(r.split(':')[1]);
+ const ph=$('#phone');const prev=ph.querySelector('.screen');const st=prev&&!scrollTop?prev.scrollTop:0;
+ ph.innerHTML=html+overlay;const sc=ph.querySelector('.screen');if(sc&&!scrollTop){sc.style.animation='none';sc.scrollTop=st}
+ demo();}
+const status=(light)=>`<div class="status${light?' light':''}"><span>12:30</span><span style="display:flex;gap:5px;align-items:center"><svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.3" y="5" width="3" height="6" rx="1"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1"/><rect x="13" y="0" width="3" height="11" rx="1"/></svg><svg width="22" height="11" viewBox="0 0 22 11" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="19" height="10" rx="3"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="currentColor"/></svg></span></div>`;
+const head=(title,right='')=>`<div class="grad" style="padding-bottom:0">${status(1)}<div class="appbar"><button class="icbtn" onclick="back()">${I.back}</button><h1>${title}</h1>${right||'<span style="width:36px"></span>'}</div></div>`;
+const nav=a=>`<div class="nav">${[['home',I.home,'Home'],['wallet',I.wallet],['qris',I.scan],['hist',I.doc],['account',I.user]].map(([k,ic,l])=>`<button class="${a===k?'on':''}" onclick="${k==='home'?"reset('home')":k==='account'?"reset('account')":"toast('Belum tersedia di prototype')"}">${ic}${a===k&&l?l:''}</button>`).join('')}</div>`;
+const logo=(c='#fff')=>`<div style="font-weight:800;font-size:19px;letter-spacing:-.5px;color:${c}">bina<span style="font-weight:500">digital</span></div>`;
+
+/* ============ SCREENS ============ */
+const R={};
+
+R.prelogin=()=>`<div class="screen" style="padding-bottom:20px">
+ <div class="grad" style="height:300px;position:absolute;inset:0 0 auto 0"></div>
+ <div style="position:relative">${status(1)}
+ <div class="appbar" style="padding-top:12px">${logo()}<button class="icbtn" onclick="toast('Bina Care 1500738')">${I.cs}</button></div>
+ <div class="wrap" style="color:#fff;margin-top:40px;display:flex;justify-content:space-between;align-items:flex-end">
+  <div><div style="opacity:.85">Selamat datang kembali,</div><div style="font-size:20px;font-weight:700;margin-top:2px">${ME.name}</div></div>
+  <a style="font-size:12px;font-weight:700;cursor:pointer" onclick="go('login')">Ganti akun</a></div>
+ <div style="background:var(--bg);border-radius:24px 24px 0 0;margin-top:24px;padding:24px 16px 0">
+  <div class="qa" style="grid-template-columns:repeat(3,1fr);padding:0">
+   ${[['Transfer','#E3141B',G.tr],['Scan QRIS','#2F6FE4',G.qr],['Kode Bayar','#7A3FD1',G.bill],['Top Up','#E3141B',G.top],['Setor Tunai','#14A44D',G.dep],['Tarik Tunai','#F2A100',G.tt]].map(([l,c,g])=>`<div onclick="sheet(loginNeeded('${l}'),1)">${qaIcon(c,g)}${l}</div>`).join('')}
+  </div>
+  <div class="card" style="padding:12px;margin-top:20px;display:flex;align-items:center" onclick="sheet(loginNeeded('Bayar tagihan'),1)"><div class="grow"><div class="name small">Bayar tagihan lebih mudah</div><div class="xs muted" style="margin-top:3px">Nikmati transaksi kapan saja di mana saja.</div></div>${I.chev}</div>
+  <div style="display:flex;gap:8px;margin-top:16px"><button class="btn" onclick="go('login')">Masuk</button><button class="btn" style="width:48px;flex:none;padding:0" onclick="bioLogin()">${I.finger}</button></div>
+  ${promo()}
+ </div></div></div>`;
+const loginNeeded=l=>`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Masuk dulu, ya</div><div class="small muted" style="margin-bottom:18px">Untuk menggunakan ${l}, masuk ke akun Bina Digital kamu.</div><button class="btn" onclick="closeSheet();go('login')">Masuk</button></div>`;
+function bioLogin(){if(!S.bio){sheet(`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Login sidik jari belum aktif</div><div class="small muted" style="margin-bottom:18px">Masuk dengan password dulu, lalu aktifkan login sidik jari di Akun › Keamanan.</div><button class="btn" onclick="closeSheet();go('login')">Masuk dengan password</button></div>`,1);return}
+ sheet(`<div style="text-align:center;padding:10px 0"><div style="width:64px;height:64px;border-radius:50%;background:#FFF1F1;color:var(--red);display:grid;place-items:center;margin:0 auto 12px;transform:scale(1.4)">${I.finger}</div><div class="name">Sentuh sensor sidik jari</div><div class="small muted" style="margin-top:6px">Memverifikasi…</div></div>`,1);setTimeout(()=>{reset('home')},900)}
+const promo=()=>`<div style="margin-top:20px;height:163px;border-radius:16px;background:linear-gradient(120deg,#B30E14,#E3141B 55%,#F45B2B);color:#fff;padding:18px;position:relative;overflow:hidden">
+ <div style="font-size:11px;font-weight:700;opacity:.9">Investasi Emas, Cashback Emas</div>
+ <div style="font-size:40px;font-weight:800;margin-top:14px;color:#FFD34D">Rp150<span style="font-size:22px">rb</span></div>
+ <div style="font-size:10px;opacity:.85;margin-top:6px">Periode program 1 Jul – 30 September 2026</div>
+ <div style="position:absolute;right:-20px;top:-20px;width:150px;height:150px;border-radius:50%;background:rgba(255,211,77,.25)"></div>
+ <div style="position:absolute;right:14px;top:14px;font-size:11px;font-weight:800">binadigital</div></div>`;
+
+R.login=()=>`<div class="screen">${head('Masuk')}<div class="wrap" style="margin-top:20px">
+ <div class="field" style="margin-bottom:10px"><label>Username</label><input value="" placeholder="Masukkan username" id="lu"></div>
+ <div class="field"><label>Password</label><input type="password" placeholder="Masukkan password" id="lp"></div>
+ <div class="small" style="color:var(--red);font-weight:600;margin-top:12px">Lupa password?</div>
+ <div class="xs muted" style="margin-top:16px">Prototype: isi apa saja untuk masuk.</div></div>
+ <div class="footer"><button class="btn" onclick="reset('home')">Masuk</button></div></div>`;
+
+/* ---------- HOME ---------- */
+R.home=()=>{const ob=S.onboard,bal=ob?0:ACCS[0].bal;
+return `<div class="screen">
+ <div style="position:absolute;inset:0 0 auto 0;height:420px;background:radial-gradient(120% 80% at 80% 0%,#FFD9DB 0%,#FDEFF0 45%,var(--bg) 100%)"></div>
+ <div style="position:relative">${status()}
+ <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;padding-top:8px">
+  <div>${logo('var(--red)')}<div class="xs muted" style="margin-top:3px;cursor:pointer" onclick="sheet(acctSheet())">Akun Individu ▾</div></div>
+  <div style="display:flex;gap:8px"><button class="icbtn dark">${I.bell}</button><button class="icbtn dark" onclick="openAssistant()">${I.cs}</button></div></div>
+ <div class="wrap row" style="margin-top:20px;cursor:pointer" onclick="reset('account')"><div class="av" style="width:44px;height:44px;background:linear-gradient(135deg,#F9B,#C69)">NP</div>
+  <div class="grow"><div class="name">Halo, ${ME.name}</div><div class="xs muted row" style="gap:6px;margin-top:4px"><span class="badge">◆ ${ME.level} Level</span> • <b style="color:var(--ink)">${ob?0:ME.poin.toLocaleString('id-ID')} Poin</b></div></div>${I.chev}</div>
+ <div class="wrap" style="margin-top:18px;position:relative">
+  ${ob?'':`<div style="margin:0 24px;height:30px;border-radius:14px 14px 0 0;background:#7A1B52;color:#fff;font-size:10px;display:flex;justify-content:space-between;padding:7px 14px"><span>Tabungan Valas</span><b>Rp 25.000.000</b></div>
+  <div style="margin:-6px 12px 0;height:30px;border-radius:14px 14px 0 0;background:#A3123A;color:#fff;font-size:10px;display:flex;justify-content:space-between;padding:7px 14px"><span>Tabungan Simpanan</span><b>Rp 5.800.000</b></div>`}
+  <div class="grad" style="border-radius:20px;padding:20px;margin-top:-6px;box-shadow:0 14px 30px rgba(200,15,22,.3)">
+   <div style="display:flex;justify-content:space-between;font-size:12px;opacity:.9"><span>Tabungan Digital Utama</span><span style="background:rgba(255,255,255,.2);padding:2px 9px;border-radius:9px">${ob?'1 / 1':'1 / 3'}</span></div>
+   <div class="row" style="margin-top:10px;gap:10px"><div id="bal" style="font-size:28px;font-weight:700">${rp(bal).replace('Rp','Rp ')}</div><span onclick="const b=document.getElementById('bal');b.dataset.h=b.dataset.h?'':'1';b.textContent=b.dataset.h?'Rp •••••••':'${rp(bal).replace('Rp','Rp ')}'" style="cursor:pointer">${I.eye}</span></div>
+   <div class="xs row" style="opacity:.85;margin-top:6px;gap:6px">1234 5678 7890 ${I.copy}</div>
+   <div style="display:flex;margin-top:18px;background:rgba(255,255,255,.14);border-radius:14px;padding:10px 0">
+    ${(ob?[['Top Up',G.top,"toast('Top Up belum tersedia')"],['Riwayat',G.bill,"toast('Riwayat belum tersedia')"]]:[['Transfer',G.tr,'startTransfer()'],['Tarik Tunai',G.tt,"toast('Tarik Tunai belum tersedia')"],['Riwayat',G.bill,"toast('Riwayat belum tersedia')"]]).map(([l,g,f])=>`<div onclick="${f}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:600;cursor:pointer">${g}${l}</div>`).join('')}</div></div></div>
+ <div class="wrap">
+ ${ob?`<div class="card" style="padding:14px;margin-top:18px"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:14px">Mulai pakai Binadigital</b><span class="badge">1/3 selesai</span></div>
+  ${[['Isi saldo pertama','Top up dari bank lain, Indomaret atau Alfamart',1],['Ajukan kartu debit','Gratis pengajuan & pengiriman',0],['Coba bayar pakai QRIS','Dapat +50 XP di transaksi pertama',0]].map(([a,b,d],i)=>`<div class="row" style="margin-top:12px"><div class="av" style="width:28px;height:28px;font-size:12px;background:${d?'var(--green)':'#EEE'};color:${d?'#fff':'#888'}">${d?'✓':i+1}</div><div class="grow"><div class="name small" style="${d?'text-decoration:line-through;color:#999':''}">${a}</div><div class="xs muted">${b}</div></div>${I.chev}</div>`).join('')}</div>`:''}
+ <div class="card" style="margin-top:18px">
+  <div class="xs" style="background:linear-gradient(90deg,#E3141B,#A3123A);color:#fff;font-weight:700;padding:8px 14px;border-radius:15px 15px 0 0;display:flex;justify-content:space-between">Kelola Transaksi Usaha Lebih Praktis! <span>›</span></div>
+  <div class="qa">${[['Top Up','#E3141B',G.top],['Bayar/Beli','#F2A100',G.bill],['Deposito','#7A3FD1',G.dep,'7.88%'],['Emas','#F2A100',G.gold,'4.8%'],['Buka Tabungan','#2F6FE4',G.sav,'4%'],['Cicilan Bina','#14A44D',G.cic],['Kasbon Bina','#D63384',G.kas],['Lainnya','#2F6FE4',G.grid]].map(([l,c,g,h])=>`<div onclick="toast('${l} belum tersedia di prototype')">${h?`<span class="hl">${h}</span>`:''}${qaIcon(c,g)}${l}</div>`).join('')}</div></div>
+ ${ob?'':recent()}
+ <div class="sec-h">Spesial Promo <a>Lihat semua</a></div>${promo()}
+ <div class="sec-h">Harga Jual Valas <a>Lihat semua</a></div>
+ <div class="card" style="padding:4px 16px">${[['🇺🇸','USD / IDR','Rp 16.450','↑ 0,32%',1],['🇸🇬','SGD / IDR','Rp 12.880','↓ 0,12%',0],['🇨🇳','CNY / IDR','Rp 2.647','↓ 0,08%',0],['🇦🇺','AUD / IDR','Rp 10.950','↑ 0,21%',1]].map(([f,a,b,c,u])=>`<div class="row" style="padding:12px 0;${a!=='USD / IDR'?'border-top:1px solid var(--line)':''}"><span style="font-size:20px">${f}</span><span class="grow small" style="font-weight:600">${a}</span><b class="small">${b}</b><span class="xs" style="padding:3px 8px;border-radius:8px;background:${u?'#E6F6EC':'#FDEBEC'};color:${u?'var(--green)':'var(--red)'};font-weight:700">${c}</span></div>`).join('')}</div>
+ <div class="xs muted" style="text-align:center;margin:26px 10px 0;line-height:1.5">PT Bank Ina Perdana Tbk berizin dan diawasi OJK, peserta Penjaminan LPS</div>
+ </div></div></div>${nav('home')}`};
+function recent(){const r=SAVED.slice(0,4);
+ if(S.emptyRecent)return `<div class="sec-h">Transfer Terakhir</div><div class="card" style="padding:20px;text-align:center"><div class="name small">Belum ada transfer</div><div class="xs muted" style="margin:6px 0 14px">Penerima yang sering kamu kirimi akan muncul di sini.</div><button class="btn" style="height:40px;width:auto;padding:0 20px;margin:0 auto;font-size:13px" onclick="startTransfer()">Transfer sekarang</button></div>`;
+ return `<div class="sec-h">Transfer Terakhir <a onclick="startTransfer()">Lihat semua</a></div><div class="card" style="display:flex;justify-content:space-between;padding:14px 12px">
+ <div style="text-align:center;cursor:pointer;width:56px" onclick="startTransfer('new')"><div class="av" style="width:48px;height:48px;background:#FFF1F1;color:var(--red);margin:0 auto">${I.plus}</div><div class="xs" style="font-weight:600;margin-top:6px">Baru</div><div class="xs muted">Rekening</div></div>
+ ${[SAVED[0],SAVED[3],SAVED[1],SAVED[4]].map(p=>`<div style="text-align:center;cursor:pointer;width:56px" onclick="pickRecipient('${p.no}')"><div class="av" style="width:48px;height:48px;background:${colr(p.n)};margin:0 auto">${ini(p.n)}</div><div class="xs" style="font-weight:600;margin-top:6px;white-space:nowrap">${p.n.split(' ')[0]} ${p.n.split(' ')[1][0]}.</div><div class="xs muted">${p.b.replace('Bank ','')}</div></div>`).join('')}</div>`}
+const acctSheet=()=>`<h3>Pilih akun</h3><div class="opt on row"><div class="av" style="background:linear-gradient(135deg,#F9B,#C69)">NP</div><div class="grow"><div class="name">${ME.name}</div><div class="xs muted">Akun Individu</div></div><span style="color:var(--red)">●</span></div>
+ <div class="card" style="padding:14px;background:#FFF8F8"><span class="badge">BARU</span><div class="name" style="margin-top:8px">Punya usaha? Buka akun Bina Usaha</div><div class="xs muted" style="margin:4px 0 12px">Kelola kas, invoice & transaksi usaha dalam satu aplikasi, tanpa ganti login.</div><button class="btn" style="height:40px;font-size:13px" onclick="closeSheet();toast('Pembukaan Bina Usaha belum tersedia di prototype')">Buka akun usaha</button></div>`;
+
+/* ---------- ACCOUNT ---------- */
+R.account=()=>`<div class="screen"><div class="grad" style="position:absolute;inset:0 0 auto 0;height:180px"></div><div style="position:relative">${status(1)}
+ <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;color:#fff;padding-top:8px"><b style="font-size:18px">Akun</b></div>
+ <div class="wrap row" style="color:#fff;margin-top:14px"><div class="av" style="width:44px;height:44px;background:linear-gradient(135deg,#F9B,#C69);border:2px solid #fff">NP</div><div><div class="name">${ME.name}</div><div class="xs" style="opacity:.85">${ME.user}</div></div></div>
+ <div class="wrap" style="margin-top:18px">
+ <div class="card" style="padding:14px;cursor:pointer" onclick="go('level')"><div style="display:flex;justify-content:space-between"><div class="row" style="gap:6px"><span class="badge">◆ ${ME.level} Level</span><span class="badge" style="background:#FFF4DB;color:#B07800">${ME.xp.toLocaleString('id-ID')} XP</span></div><div style="text-align:right"><div class="xs muted">Poin Reward</div><b class="small">🪙 ${ME.poin.toLocaleString('id-ID')} Poin</b></div></div>
+  <div style="display:flex;justify-content:space-between;margin-top:14px" class="small"><b>Progres Menuju ${ME.nextTier}</b><span class="muted">${ME.xp.toLocaleString('id-ID')} / ${ME.next.toLocaleString('id-ID')} XP</span></div>
+  <div class="bar r" style="margin-top:8px"><i style="width:${ME.xp/ME.next*100}%"></i></div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px" class="xs muted"><span>Tersisa ${(ME.next-ME.xp).toLocaleString('id-ID')} XP lagi</span><span>${ME.nextTier} Level</span></div>
+  <div class="small" style="margin-top:14px;background:#FFF1F1;color:var(--red);font-weight:700;padding:9px 12px;border-radius:10px;display:flex;justify-content:space-between">Lihat Semua Benefit Prime & Tukar Poin ›</div></div>
+ <div class="card row" style="padding:12px;margin-top:12px"><div style="font-size:34px">✉️</div><div class="grow"><div class="name small">Yuk Verifikasi email kamu</div><div class="xs muted">${ME.email}</div></div><button class="badge" style="background:var(--red);color:#fff;padding:5px 10px" onclick="sheet(emailSent(),1)">Verifikasi</button></div>
+ ${menu('Profil & Kartu',[['👤','Data Diri','',"go('profile')"],['💳','Kartu ATM / Debit','Aktif']])}
+ ${menu('Informasi Keuangan',[['📄','Laporan Keuangan'],['🕒','Transaksi Terjadwal / Rutin','2 aktif']])}
+ ${menu('Keamanan',[['🛡️','Ubah PIN Transaksi'],['🔒','Ubah Password'],['☝️','Login Sidik Jari','tog']])}
+ ${menu('Bantuan',[['📞','Hubungi Bina Care','1500738'],['❓','Pusat Bantuan'],['📑','Syarat & Ketentuan']])}
+ <div class="card menu" style="padding:0 12px;margin-top:12px"><div class="mi" onclick="sheet(logoutSheet(),1)"><span class="ico">⎋</span><span class="grow" style="color:var(--red);font-weight:600">Keluar</span></div></div>
+ </div></div></div>${nav('account')}`;
+function menu(t,items){return `<div class="card menu" style="padding:4px 12px;margin-top:12px"><div style="font-weight:700;font-size:14px;padding:12px 0 4px">${t}</div>${items.map(([ic,l,r,f])=>`<div class="mi" onclick="${r==='tog'?'bioToggle()':f||`toast('${l} belum tersedia di prototype')`}"><span class="ico">${ic}</span><span class="grow">${l}</span>${r==='tog'?`<span class="tog ${S.bio?'on':''}"></span>`:`<span class="xs muted">${r||''}</span>${I.chev}`}</div>`).join('')}</div>`}
+const emailSent=()=>`<div style="text-align:center"><div style="font-size:40px">📬</div><div style="font-size:16px;font-weight:700;margin:8px 0">Cek email kamu</div><div class="small muted" style="margin-bottom:18px">Link verifikasi sudah dikirim ke ${ME.email}. Link berlaku 24 jam.</div><button class="btn" onclick="closeSheet()">Buka aplikasi email</button><div class="xs muted" style="margin-top:12px">Kirim ulang dalam 00:59</div></div>`;
+const logoutSheet=()=>`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Keluar dari Bina Digital?</div><div class="small muted" style="margin-bottom:18px">Kamu perlu masuk lagi dengan password atau sidik jari.</div><button class="btn" onclick="closeSheet();reset('prelogin')">Keluar</button><button class="btn grey" style="margin-top:8px" onclick="closeSheet()">Batal</button></div>`;
+function bioToggle(){if(S.bio)sheet(`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Matikan login sidik jari?</div><div class="small muted" style="margin-bottom:18px">Kamu perlu masuk dengan password setiap kali membuka Bina Digital.</div><button class="btn" onclick="S.bio=false;closeSheet();paint()">Matikan</button><button class="btn grey" style="margin-top:8px" onclick="closeSheet()">Batal</button></div>`,1);
+ else sheet(`<div style="text-align:center"><div style="font-size:16px;font-weight:700;margin-bottom:8px">Verifikasi identitasmu</div><div class="small muted" style="margin-bottom:18px">Ikuti instruksi autentikasi pada perangkatmu.</div><button class="btn" onclick="S.bio=true;closeSheet();paint();toast('Login sidik jari aktif')">Aktifkan Sekarang</button><button class="btn grey" style="margin-top:8px" onclick="closeSheet()">Nanti Saja</button></div>`,1)}
+
+R.profile=()=>`<div class="screen">${head('Detail Profil')}<div class="wrap" style="margin-top:16px"><div class="card" style="padding:4px 14px">
+ ${[['Nama',ME.name],['Username',ME.user],['No Hp','081*******312'],['Email',ME.email],['No Rekening Utama','1234 5678 7890'],['Alamat Sesuai KTP','Jl. Ampera Raya No.11, Ragunan, Ps. Minggu, Jakarta Selatan 12560']].map(([a,b],i)=>`<div style="padding:12px 0;${i?'border-top:1px solid var(--line)':''}"><div class="xs muted">${a}</div><div class="small" style="font-weight:600;margin-top:3px">${b}</div></div>`).join('')}</div></div></div>`;
+
+R.level=()=>`<div class="screen">${head('Level Kamu')}
+ <div class="grad" style="padding:0 16px 20px;margin-top:-1px"><div style="border-radius:20px;background:rgba(255,255,255,.14);padding:18px"><div class="xs" style="opacity:.85">${ME.name}</div><div style="font-size:26px;font-weight:800">${ME.level}</div>
+  <div class="small" style="margin-top:16px;font-weight:700">${ME.xp.toLocaleString('id-ID')} / ${ME.next.toLocaleString('id-ID')} XP</div><div class="bar" style="margin-top:8px"><i style="width:75%"></i></div><div class="xs" style="opacity:.85;margin-top:6px">${(ME.next-ME.xp).toLocaleString('id-ID')} XP lagi menuju ${ME.nextTier}</div></div>
+  <div style="display:flex;gap:6px;justify-content:center;margin-top:12px">${['Core','Growth','Prime','Elite','Private'].map(t=>`<span class="xs" style="padding:3px 8px;border-radius:9px;background:${t===ME.level?'#fff':'rgba(255,255,255,.18)'};color:${t===ME.level?'var(--red)':'#fff'};font-weight:700">${t}</span>`).join('')}</div></div>
+ <div class="wrap"><div class="card" style="display:flex;margin-top:14px;padding:14px 0;text-align:center">${[[ME.poin.toLocaleString('id-ID'),'Poin'],['8','Benefit'],['3','Voucher']].map(([a,b])=>`<div style="flex:1"><b>${a}</b><div class="xs muted">${b}</div></div>`).join('')}</div>
+ <div class="sec-h">Benefit Prime</div><div class="card" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px">${[['Gratis Transfer BI-FAST','50/100x'],['Bebas Admin Bayar/Beli','1/1x'],['Bebas Biaya RTGS','3/5x'],['Bebas Admin Top Up E-Wallet','3/5x'],['Gratis Setor Tunai','3/5x'],['Gratis Tarik Tunai','2/3x']].map(([a,b])=>`<div style="background:#FFF6F6;border-radius:12px;padding:10px"><b class="small" style="color:var(--red)">${b}</b><div class="xs" style="margin-top:6px">${a}</div></div>`).join('')}</div>
+ <div class="sec-h">Pakai poinmu sebelum hangus!</div><div class="small muted">250 poin akan hangus 31 Des 2026</div>
+ <div class="sec-h">Voucher Tersedia</div>${[['Voucher Makan Es Teler 77','500 poin'],['Voucher MAP Group','600 poin']].map(([a,b])=>`<div class="card row" style="padding:12px;margin-bottom:8px"><div class="grow"><div class="name small">${a}</div><div class="xs muted">🪙 ${b}</div></div><span class="badge">Tukar</span></div>`).join('')}</div></div>`;
+
+/* ---------- TRANSFER ---------- */
+function startTransfer(t){S.tx=newTx();S.tab=t==='new'?'new':'saved';S.q='';S.nb={bank:null,no:'',checked:null,fav:false};go('tlist')}
+function pickRecipient(no){if(!S.tx)S.tx=newTx();const p=SAVED.find(x=>x.no===no);S.tx.to={...p};S.tx.amount=0;go('tamount')}
+const person=(p,star=true)=>`<div class="item" onclick="pickRecipient('${p.no}')"><div class="av" style="background:${colr(p.n)}">${ini(p.n)}</div><div class="grow"><div class="name">${p.n}</div><div class="sub">${p.b}<span class="dot"></span>${p.no}</div></div>${star?I.star(p.fav):''}</div>`;
+R.tlist=()=>{const q=S.q.toLowerCase();const f=q?SAVED.filter(p=>(p.n+p.no).toLowerCase().includes(q)):null;
+return `<div class="screen">${head('Transfer',`<button class="icbtn" onclick="toast('Info biaya & limit transfer')">${I.info}</button>`)}
+ <div class="wrap" style="margin-top:16px"><div class="seg"><button class="${S.tab==='new'?'on':''}" onclick="S.tab='new';paint()">Penerima Baru</button><button class="${S.tab==='saved'?'on':''}" onclick="S.tab='saved';paint()">Tersimpan</button></div>
+ ${S.tab==='saved'?`<div class="card" style="margin-top:14px;padding:13px"><div class="search">${I.search}<input placeholder="Cari nama atau no. rekening tersimpan" value="${S.q}" oninput="S.q=this.value;paint();const i=document.querySelector('.search input');i.focus();i.setSelectionRange(99,99)"></div>
+  ${f?(f.length?`<div class="list" style="margin-top:8px">${f.map(p=>person(p)).join('')}</div>`:`<div style="text-align:center;padding:30px 10px"><div style="font-size:40px">🔍</div><div class="name" style="margin-top:8px">Penerima belum ditemukan</div><div class="xs muted" style="margin:6px 0 16px">Coba periksa kembali nama atau nomor rekening yang kamu masukkan.</div><button class="btn ghost" style="height:40px;font-size:13px" onclick="S.tab='new';paint()">Transfer baru</button></div>`)
+  :`<div class="small" style="font-weight:700;margin:16px 0 4px">Favorit</div><div class="list">${SAVED.filter(p=>p.fav).map(p=>person(p)).join('')}</div><div class="small" style="font-weight:700;margin:16px 0 4px">Semua</div><div class="list">${SAVED.filter(p=>!p.fav).slice(0,9).map(p=>person(p)).join('')}</div>`}</div>`
+ :newForm()}</div>
+ ${S.tab==='new'?`<div class="footer"><button class="btn" ${S.nb.bank&&S.nb.no.length>=8?'':'disabled'} onclick="checkAcct()">Lanjutkan</button></div>`:''}</div>`};
+function newForm(){const nb=S.nb;return `<div class="card" style="margin-top:14px;padding:14px">
+ <div class="field" onclick="sheet(bankSheet())"><label>Bank Tujuan</label><div style="display:flex;justify-content:space-between;font-weight:600;font-size:15px;color:${nb.bank?'var(--ink)':'var(--ink3)'}">${nb.bank||'Pilih bank'} ${I.chev}</div></div>
+ <div class="field" style="margin-top:10px;cursor:text"><label>Nomor Rekening</label><input inputmode="numeric" placeholder="Masukkan nomor rekening" value="${nb.no}" oninput="S.nb.no=this.value.replace(/\\D/g,'');S.nb.checked=null;paint();const i=this;setTimeout(()=>{const n=document.querySelectorAll('.field input')[0];n.focus();n.setSelectionRange(99,99)})"></div>
+ ${nb.checked===false?`<div style="margin-top:12px;background:#FDEBEC;color:var(--red);border-radius:12px;padding:12px" class="small"><b>Rekening tidak ditemukan</b><div class="xs" style="margin-top:4px">Nomor rekening yang kamu masukkan tidak terdaftar. Periksa kembali nomor rekening tujuan.</div></div>`:''}
+ <label class="row small" style="margin-top:14px;cursor:pointer"><input type="checkbox" ${nb.fav?'checked':''} onchange="S.nb.fav=this.checked" style="accent-color:var(--red);width:18px;height:18px"> Simpan ke Favorit</label>
+ <div class="xs muted" style="margin-top:12px">Prototype: nomor diawali 0000 akan “tidak ditemukan”.</div></div>`}
+const bankSheet=()=>`<h3>Bank Tujuan</h3><div class="search" style="margin-bottom:12px">${I.search}<input placeholder="Cari bank" oninput="document.querySelectorAll('.bk').forEach(e=>e.style.display=e.textContent.toLowerCase().includes(this.value.toLowerCase())?'':'none')"></div>
+ <div class="list"><div class="item bk" onclick="setBank('Bank INA')"><div class="av" style="background:var(--red);font-size:10px">INA</div><b class="grow small">BANK INA</b><span class="badge">Gratis</span></div></div>
+ <div class="xs muted" style="font-weight:700;margin:12px 0 4px">Populer Bank</div><div class="list">${BANKS.populer.map(b=>`<div class="item bk" onclick="setBank('${b}')"><div class="av" style="background:${colr(b)};font-size:10px">${b.slice(0,3).toUpperCase()}</div><b class="grow small">${b.toUpperCase()}</b></div>`).join('')}</div>
+ <div class="xs muted" style="font-weight:700;margin:12px 0 4px">Semua Bank</div><div class="list">${BANKS.semua.map(b=>`<div class="item bk" onclick="setBank('${b}')"><div class="av" style="background:${colr(b)};font-size:10px">${b.slice(0,3).toUpperCase()}</div><b class="grow small">${b.toUpperCase()}</b></div>`).join('')}</div>`;
+function setBank(b){S.nb.bank=b;closeSheet();paint()}
+function checkAcct(){const nb=S.nb;if(nb.no.startsWith('0000')){nb.checked=false;paint();return}
+ const known=SAVED.find(p=>p.no===nb.no);const n=known?known.n:'Hendra Wijaya';
+ sheet(`<h3>Konfirmasi Penerima</h3><div class="card row" style="padding:14px"><div class="av" style="background:${colr(n)}">${ini(n)}</div><div><div class="name">${n}</div><div class="sub">${nb.bank.toUpperCase()}<span class="dot"></span>${nb.no}</div></div></div><button class="btn" style="margin-top:16px" onclick="S.tx.to={n:'${n}',b:'${nb.bank}',no:'${nb.no}'};${nb.fav?`SAVED.push({n:'${n}',b:'${nb.bank}',no:'${nb.no}',fav:1});`:''}closeSheet();go('tamount')">Lanjutkan</button>`)}
+R.tamount=()=>{const t=S.tx,to=t.to;const ok=t.amount>=10000&&t.amount<=t.src.bal;
+return `<div class="screen" style="padding-bottom:120px">${head('Transfer')}<div class="wrap" style="margin-top:16px">
+ <div class="card" style="padding:18px;text-align:center"><div class="av" style="margin:0 auto;background:${colr(to.n)}">${ini(to.n)}</div><div class="name" style="margin-top:8px">${to.n}</div><div class="sub" style="justify-content:center">${to.b.toUpperCase()}<span class="dot"></span>${to.no}</div>
+  <button class="xs" style="border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-top:10px;font-weight:600" onclick="back()">Ganti</button>
+  <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;margin-top:18px"><span style="font-size:22px;color:var(--ink2)">Rp</span><input id="amt" inputmode="numeric" value="${t.amount?t.amount.toLocaleString('id-ID'):''}" placeholder="0" style="border:0;outline:0;font-size:34px;font-weight:800;width:${Math.max(1,(t.amount?t.amount.toLocaleString('id-ID'):'0').length)*21+10}px;text-align:center;background:none;caret-color:var(--red)" oninput="S.tx.amount=+this.value.replace(/\\D/g,'');paint();const i=document.getElementById('amt');i.focus();i.setSelectionRange(99,99)"></div>
+  ${t.amount>t.src.bal?`<div class="xs" style="color:var(--red);margin-top:6px">Saldo tidak cukup</div>`:t.amount&&t.amount<10000?`<div class="xs" style="color:var(--red);margin-top:6px">Minimal transfer Rp10.000</div>`:''}
+  <div class="row" style="justify-content:center;gap:6px;margin-top:10px">${[100000,250000,500000].map(v=>`<span class="chip" style="font-size:11px;padding:6px 10px" onclick="S.tx.amount=${v};paint()">${rp(v)}</span>`).join('')}</div></div>
+ <div class="card" style="padding:14px;margin-top:12px"><div class="small" style="font-weight:600;margin-bottom:8px">Waktu Transfer</div><div style="display:flex;gap:6px">${['Sekarang','Terjadwal','Rutin'].map(w=>`<span class="chip ${t.when===w?'on':''}" style="flex:1;text-align:center" onclick="S.tx.when='${w}';paint()">${w}</span>`).join('')}</div>
+  <div class="small" style="font-weight:600;margin:16px 0 8px">Rekening Asal</div><div class="field row" onclick="sheet(srcSheet())"><div style="width:44px;height:28px;border-radius:5px;background:var(--red);color:#fff;font-size:7px;font-weight:800;padding:4px">binadigital</div><div class="grow"><div class="name small">${t.src.name}</div><div class="xs muted">Saldo ${rp(t.src.bal)} · ${t.src.no}</div></div><span class="small muted" style="font-weight:600">Ganti</span></div>
+  <div class="small" style="font-weight:600;margin:16px 0 4px">Catatan</div><input placeholder="Tambah catatan" value="${t.note}" onchange="S.tx.note=this.value" style="border:0;border-bottom:1px solid var(--line);width:100%;padding:8px 0;outline:0;font-size:14px"></div></div>
+ <div class="footer"><button class="btn" ${ok?'':'disabled'} onclick="amountNext()">Lanjutkan</button></div></div>`};
+const srcSheet=()=>`<h3>Sumber Dana</h3>${ACCS.map(a=>`<div class="opt row ${S.tx.src.id===a.id?'on':''}" onclick="S.tx.src=ACCS.find(x=>x.id==='${a.id}');closeSheet();paint()"><div class="grow"><div class="name small">${a.name}</div><div class="xs muted">${a.no}</div></div><b class="small">${rp(a.bal)}</b></div>`).join('')}`;
+function amountNext(){if(isINA(S.tx.to.b)){S.tx.method=null;S.tx.purpose=null;go('tconfirm');return}sheet(methodSheet())}
+const methodSheet=()=>`<h3>Metode transfer</h3>${METHODS.map(m=>{const dis=S.tx.amount<m.min||S.tx.amount>m.max;return `<div class="opt" style="${dis?'opacity:.45;pointer-events:none':''}" onclick="S.tx.method=METHODS.find(x=>x.id==='${m.id}');sheet(purposeSheet())"><div style="display:flex;justify-content:space-between"><b class="small">${m.n}</b><b class="small" style="color:${m.fee?'var(--ink)':'var(--green)'}">${m.feeTxt}</b></div><div class="kv"><span>Nominal</span><span>${m.nom}</span></div><div class="kv"><span>Limit Perhari</span><span>${m.lim}</span></div><div class="kv"><span>Operasional</span><span>${m.op}</span></div>${dis?'<div class="xs" style="color:var(--red);margin-top:6px">Tidak tersedia untuk nominal ini</div>':''}</div>`}).join('')}`;
+const purposeSheet=()=>`<h3>Tujuan transfer</h3>${PURPOSES.map(p=>`<div class="opt" onclick="S.tx.purpose='${p}';closeSheet();go('tconfirm')"><b class="small">${p}</b></div>`).join('')}`;
+const feeOf=t=>t.method?t.method.fee:0;
+const feeTxt=(t,after)=>!t.method?'Gratis':t.method.id==='bifast'?`Gratis (sisa ${after?49:50}/100x)`:rp(t.method.fee);
+R.tconfirm=()=>{const t=S.tx;const total=t.amount+feeOf(t);
+return `<div class="screen">${head('Konfirmasi')}<div class="wrap" style="margin-top:16px">
+ <div class="card" style="padding:14px"><div class="row"><div style="width:44px;height:28px;border-radius:5px;background:var(--red);color:#fff;font-size:7px;font-weight:800;padding:4px">binadigital</div><div><div class="name small">${t.src.name}</div><div class="xs muted">${rp(t.src.bal)}</div></div></div>
+  <div class="row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><div class="av" style="background:${colr(t.to.n)}">${ini(t.to.n)}</div><div><div class="name small">${t.to.n}</div><div class="sub">${t.to.b.toUpperCase()}<span class="dot"></span>${t.to.no}</div></div></div></div>
+ <div class="card" style="padding:14px;margin-top:12px;background:#FFF4F4;display:flex;justify-content:space-between"><span>Total</span><b style="font-size:17px">${rp(total)}</b></div>
+ <div class="card" style="padding:14px;margin-top:12px"><div class="small" style="text-align:center;font-weight:700;margin-bottom:10px">Detail Transaksi</div>
+  ${[t.method&&['Metode Transfer',t.method.n],['Waktu Transfer',t.when],t.purpose&&['Tujuan Transfer',t.purpose],t.note&&['Catatan',t.note]].filter(Boolean).map(([a,b])=>`<div class="kv" style="font-size:13px;margin-top:10px"><span>${a}</span><span>${b}</span></div>`).join('')}
+  <div style="border-top:1px dashed var(--line);margin:12px 0 2px"></div>
+  <div class="kv" style="font-size:13px;margin-top:10px"><span>Nominal</span><span>${rp(t.amount)}</span></div><div class="kv" style="font-size:13px;margin-top:10px"><span>Biaya Layanan</span><span style="color:${feeOf(t)?'var(--ink)':'var(--green)'};font-weight:600">${feeTxt(t)}</span></div></div></div>
+ <div class="footer"><button class="btn" onclick="S.pin='';go('tpin')">Lanjutkan</button></div></div>`};
+R.tpin=()=>`<div class="screen" style="padding-bottom:0">${head('PIN')}<div style="text-align:center;margin-top:30px"><div class="name">Masukkan 6 digit PIN kamu</div>
+ <div class="dots">${[0,1,2,3,4,5].map(i=>`<i class="${i<S.pin.length?'f':''}"></i>`).join('')}</div><div class="small" style="color:var(--red);font-weight:600">Lupa PIN?</div></div>
+ <div class="pinpad" style="margin-top:50px">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>`<button onclick="pinKey('${k}')">${k}</button>`).join('')}</div>
+ <div class="xs muted" style="text-align:center;margin-top:12px">Prototype: PIN apa saja. Hasil diatur di panel demo.</div></div>`;
+function pinKey(k){if(k==='')return;if(k==='⌫')S.pin=S.pin.slice(0,-1);else if(S.pin.length<6)S.pin+=k;paint();
+ if(S.pin.length===6)setTimeout(()=>{if(S.result==='signal'){sheet(`<div style="text-align:center"><div style="font-size:40px">📶</div><div style="font-size:16px;font-weight:700;margin:8px 0">Koneksi terputus</div><div class="small muted" style="margin-bottom:18px">Koneksi internet kamu terputus. Periksa koneksimu sebelum melanjutkan transaksi.</div><button class="btn" onclick="closeSheet();S.pin='';S.result='success';paint();toast('Koneksi kembali normal')">Coba Kembali</button><button class="btn grey" style="margin-top:8px" onclick="closeSheet();S.tx.ref=genRef();S.stack=['home','tresult:pending'];render()">Cek status transaksi</button></div>`,1);return}
+ S.tx.ref=genRef();S.tx.time=new Date();S.stack=['home','tresult:'+S.result];render()},300)}
+const genRef=()=>'TRF-'+Date.now().toString().slice(-12)+Math.floor(Math.random()*1e6);
+const fmtTime=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+', '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}).replace('.',':')+' WIB';
+R.tresult=(kind)=>{const t=S.tx;const total=t.amount+feeOf(t);const ok=kind==='success';const ic=ok?I.check:kind==='pending'?I.warn:I.x;
+ const title=ok?'Transaksi Berhasil':kind==='pending'?'Transaksi sedang diperiksa':'Transfer gagal';
+ const desc=ok?fmtTime(t.time||new Date()):kind==='pending'?'Kami belum menerima konfirmasi transaksi. Periksa status transaksi sebelum mencoba kembali.':'Maaf, transfer kamu belum berhasil diproses. Silakan coba kembali beberapa saat lagi.';
+ const rows=[['Waktu Transfer',fmtTime(t.time||new Date())],['No. Referensi',t.ref],...(S.det||!ok?[['Sumber Dana',t.src.name],['No. Rek. Sumber','********'+t.src.no.replace(/\D/g,'').slice(-4)],['Jumlah Transfer',rp(t.amount)],['Biaya Layanan',ok?feeTxt(t,1):feeTxt(t)],['Tipe Transaksi',t.method?t.method.n:'Sesama Bank INA'],...(t.note?[['Catatan',t.note]]:[]),...(t.purpose?[['Tujuan Transfer',t.purpose]]:[])]:[])];
+return `<div class="screen"><div class="grad" style="height:312px;position:absolute;inset:0 0 auto 0"></div><div style="position:relative">${status(1)}
+ <div style="text-align:center;color:#fff;padding-top:14px">${logo()}<div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;margin:20px auto 12px">${ic}</div>
+ <div style="font-weight:700">${title}</div><div class="xs" style="opacity:.85;margin:4px 24px 0;line-height:1.5">${desc}</div>${ok?`<div style="font-size:28px;font-weight:800;margin-top:8px">${rp(total)}</div>`:''}</div>
+ <div class="wrap" style="margin-top:20px"><div class="card" style="padding:14px"><div class="row" style="background:#FFF4F4;border-radius:12px;padding:10px"><div class="av" style="background:${colr(t.to.n)}">${ini(t.to.n)}</div><div><div class="name small">${t.to.n}</div><div class="sub">${t.to.b.toUpperCase()}<span class="dot"></span>${t.to.no}</div></div></div>
+  ${rows.map(([a,b])=>`<div class="kv" style="font-size:13px;margin-top:12px"><span>${a}</span><span style="text-align:right;max-width:60%;word-break:break-all">${b}</span></div>`).join('')}
+  ${ok?`<div class="small" style="text-align:center;color:var(--red);font-weight:700;margin-top:16px;cursor:pointer" onclick="S.det=!S.det;paint()">${S.det?'Tutup Detail ▴':'Lihat Detail ▾'}</div>`:''}</div></div></div>
+ <div class="footer">${ok?`<button class="btn" onclick="S.det=false;reset('home')">Selesai</button>`:`<button class="btn" onclick="reset('home')">${kind==='pending'?'Cek status transaksi':'Coba Lagi'}</button><div class="small" style="text-align:center;margin-top:10px;font-weight:600;cursor:pointer" onclick="toast('Bina Care 1500738')">Butuh bantuan?</div>`}</div></div>`};
+
+/* ---------- ASSISTANT ---------- */
+function openAssistant(){S.chat=[];S.ci='';S.mq=null;go('assist')}
+R.assist=()=>`<div class="screen" style="padding-bottom:110px">${head('Bina Assistant',`<button class="icbtn">${I.more}</button>`)}<div class="wrap" style="margin-top:20px">
+ <div class="row" style="align-items:flex-start"><div class="av" style="width:36px;height:36px;background:#FFF1F1;color:var(--red);font-size:11px">AI</div><div>
+  <div class="bubble">Apa yang bisa saya bantu hari ini? Mau melakukan apa?</div>
+  ${[['Transfer uang ke teman',G.tr],['Buka deposito',G.dep],['Bayar tagihan listrik','⚡']].map(([l,g])=>`<div class="sug" onclick="${l.startsWith('Transfer')?"S.ci='Saya mau transfer ';paint();focusC()":`toast('${l} belum tersedia di prototype')`}"><span style="color:var(--red);transform:scale(.7)">${g}</span>${l}</div>`).join('')}
+  <div class="bubble" style="margin-top:10px">atau langsung ketik saja pertanyaanmu biar kami carikan solusinya<div class="xs muted" style="margin-top:4px">Powered by AI</div></div></div></div>
+ ${S.chat.map(m=>`<div style="margin-top:12px;${m.me?'':'display:flex;gap:12px'}">${m.me?'':'<div class="av" style="width:36px;height:36px;background:#FFF1F1;color:var(--red);font-size:11px">AI</div>'}<div class="bubble ${m.me?'me':''}">${m.t}</div></div>`).join('')}</div>
+ ${S.mq!==null?`<div class="mention">${SAVED.filter(p=>p.n.toLowerCase().startsWith(S.mq.toLowerCase())||!S.mq).slice(0,4).map(p=>`<div class="item row" style="cursor:pointer" onclick="mentionPick('${p.no}')"><div class="av" style="width:32px;height:32px;font-size:11px;background:${colr(p.n)}">${ini(p.n)}</div><div><div class="name small">${p.n}</div><div class="sub">${p.b}<span class="dot"></span>${p.no}</div></div></div>`).join('')||'<div class="xs muted" style="padding:8px">Tidak ada penerima</div>'}</div>`:''}
+ <div class="composer"><button class="icbtn dark" style="border:1px solid var(--line)">${I.plus}</button><input id="ci" value="${S.ci}" placeholder="Ketik pesan… gunakan @ untuk penerima" oninput="chatInput(this.value)" onkeydown="if(event.key==='Enter')chatSend()"><button style="color:var(--red)" onclick="chatSend()">${I.send}</button></div></div>`;
+const focusC=()=>setTimeout(()=>{const i=document.getElementById('ci');if(i){i.focus();i.setSelectionRange(99,99)}});
+function chatInput(v){S.ci=v;const m=v.match(/@(\w*)$/);S.mq=m?m[1]:null;paint();focusC()}
+function mentionPick(no){const p=SAVED.find(x=>x.no===no);S.ci=S.ci.replace(/@\w*$/,'@'+p.n+' ');S.mq=null;S.pick=p;paint();focusC()}
+function chatSend(){const v=S.ci.trim();if(!v)return;S.chat.push({me:1,t:v});S.ci='';S.mq=null;
+ const am=v.match(/(\d[\d.]*)\s*(rb|ribu|k|jt|juta)?\b/i)||[];const amt=+(am[1]||'0').replace(/\./g,'');const unit=am[2];
+ const a=unit?/j/i.test(unit)?amt*1e6:amt*1e3:amt;const p=S.pick||SAVED.find(x=>v.toLowerCase().includes(x.n.toLowerCase()));
+ if(/transfer|kirim/i.test(v)&&p&&a){S.chat.push({t:`Siap! Transfer <b>${rp(a)}</b> ke <b>${p.n}</b> (${p.b} · ${p.no}). <div class="sug" style="width:auto;margin-top:10px;justify-content:center;color:var(--red);font-weight:700" onclick="S.tx=newTx();S.tx.to=SAVED.find(x=>x.no==='${p.no}');S.tx.amount=${a};go('tamount')">Lanjutkan transfer →</div>`});S.pick=null}
+ else if(/transfer|kirim/i.test(v))S.chat.push({t:'Mau transfer ke siapa dan berapa? Ketik @ untuk memilih penerima, contoh: “transfer 400.000 ke @Budi”.'});
+ else S.chat.push({t:'Maaf, di prototype ini saya baru bisa membantu transfer. Coba ketik “transfer 400.000 ke @…”.'});
+ paint();focusC()}
+
+/* ============ DEMO PANEL ============ */
+function demo(){const r=cur();$('#demo').innerHTML=`<h4>Bina Digital · Prototype</h4><p>Miawmiaw Studio — draft for review. Data is dummy.</p>
+ <div class="g"><b>Jump to</b>${[['Prelogin',"reset('prelogin')"],['Homepage',"reset('home')"],['Transfer',"reset('home');startTransfer()"],['Bina Assistant',"reset('home');openAssistant()"],['Akun',"reset('account')"],['Level Kamu',"reset('account');go('level')"]].map(([l,f])=>`<button onclick="${f}">${l}</button>`).join('')}</div>
+ <div class="g"><b>Homepage state</b><button class="${S.onboard?'on':''}" onclick="S.onboard=!S.onboard;paint()">First-time onboarding ${S.onboard?'ON':'OFF'}</button><button class="${S.emptyRecent?'on':''}" onclick="S.emptyRecent=!S.emptyRecent;paint()">Recent transfer empty ${S.emptyRecent?'ON':'OFF'}</button>
+  <button onclick="sheet('<div style=\\'text-align:center\\'><div style=\\'font-size:16px;font-weight:700;margin-bottom:8px\\'>Masih di sana?</div><div class=\\'small muted\\' style=\\'margin-bottom:18px\\'>Sesi kamu akan berakhir dalam 60 detik untuk menjaga keamanan akunmu.</div><button class=\\'btn\\' onclick=\\'closeSheet()\\'>Tetap Masuk</button><button class=\\'btn grey\\' style=\\'margin-top:8px\\' onclick=\\'closeSheet();reset(&quot;prelogin&quot;)\\'>Keluar Sekarang</button></div>',1)">Session timeout warning</button>
+  <button onclick="sheet('<div style=\\'text-align:center\\'><div style=\\'font-size:40px\\'>📶</div><div style=\\'font-size:16px;font-weight:700;margin:8px 0\\'>Sinyalnya lagi hilang, ya.</div><div class=\\'small muted\\' style=\\'margin-bottom:18px\\'>Cek koneksimu, lalu coba kembali.</div><button class=\\'btn\\' onclick=\\'closeSheet()\\'>Coba Kembali</button></div>',1)">Lost signal</button></div>
+ <div class="g"><b>Transfer result after PIN</b>${[['success','Berhasil'],['pending','Sedang diperiksa'],['failed','Gagal'],['signal','Koneksi terputus']].map(([k,l])=>`<button class="${S.result===k?'on':''}" onclick="S.result='${k}';demo()">${l}</button>`).join('')}</div>
+ <div class="g"><b>Login</b><button class="${S.bio?'on':''}" onclick="S.bio=!S.bio;paint()">Sidik jari ${S.bio?'aktif':'belum aktif'}</button></div>
+ <p style="margin-top:6px">Screen: <code>${r}</code></p>`}
+render();
+</script>
+</body>
+</html>
